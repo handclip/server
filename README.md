@@ -8,6 +8,11 @@
    2. Record the position in video.
 3. Send the positions to the client.
 
+## Problems
+
+- Processing takes too long.
+- The model is really inaccurate from longer distances.
+
 ## Thoughts
 
 - Hash videos to avoid analyzing the same video.
