@@ -60,10 +60,8 @@ def get_marks(video_path: str) -> Set[int]:
         if not result.multi_hand_landmarks:
             continue
 
-        landmarks = []
         for hand_landmarks in result.multi_hand_landmarks:
-            for landmark in hand_landmarks.landmark:
-                landmarks.append([landmark.x * frame_width, landmark.y * frame_height])
+            landmarks = [[landmark.x * frame_width, landmark.y * frame_height] for landmark in hand_landmarks.landmark]
 
             prediction = model.predict([landmarks])
             gesture = hand_gestures[np.argmax(prediction)]
