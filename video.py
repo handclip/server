@@ -13,8 +13,7 @@ logger = logging.getLogger(__name__)
 
 TIME_BETWEEN_GESTURES = 2
 
-mpHands = mp.solutions.hands
-hands = mpHands.Hands(max_num_hands=1, min_detection_confidence=0.65)
+hands = mp.solutions.hands.Hands(max_num_hands=1, min_detection_confidence=0.65)
 
 model = load_model('mp_hand_gesture')
 
@@ -37,8 +36,8 @@ hand_gestures = {gesture.value: gesture for gesture in HandGesture}
 
 @dataclass
 class RecordedGesture:
-    gesture: HandGesture = None
-    video_position: int = None
+    gesture: HandGesture
+    video_position: int
 
 
 def get_marks(video_path: str) -> Set[int]:
