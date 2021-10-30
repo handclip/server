@@ -57,23 +57,25 @@ def get_marks(video_path: str) -> Set[int]:
 
         result = hands.process(framergb)
 
-        if result.multi_hand_landmarks:
-            landmarks = []
-            for hand_landmarks in result.multi_hand_landmarks:
-                for landmark in hand_landmarks.landmark:
-                    landmarks.append([landmark.x * x, landmark.y * y])
+        if not result.multi_hand_landmarks:
+            continue
 
-                prediction = model.predict([landmarks])
-                gesture = hand_gestures[np.argmax(prediction)]
-                video_position = int(cap.get(cv2.CAP_PROP_POS_MSEC) / 1000)
+        landmarks = []
+        for hand_landmarks in result.multi_hand_landmarks:
+            for landmark in hand_landmarks.landmark:
+                landmarks.append([landmark.x * x, landmark.y * y])
 
-                if last_gesture:
-                    gestures_match = last_gesture.gesture == HandGesture.ROCK and gesture == HandGesture.FIST
-                    video_position_match = last_gesture.video_position + TIME_BETWEEN_GESTURES >= video_position
-                    if gestures_match and video_position_match:
-                        marks.add(last_gesture.video_position)
+            prediction = model.predict([landmarks])
+            gesture = hand_gestures[np.argmax(prediction)]
+            video_position = int(cap.get(cv2.CAP_PROP_POS_MSEC) / 1000)
 
-                last_gesture = RecordedGesture(gesture, video_position)
+            if last_gesture:
+                gestures_match = last_gesture.gesture == HandGesture.ROCK and gesture == HandGesture.FIST
+                video_position_match = last_gesture.video_position + TIME_BETWEEN_GESTURES >= video_position
+                if gestures_match and video_position_match:
+                    marks.add(last_gesture.video_position)
+
+            last_gesture = RecordedGesture(gesture, video_position)
 
     cap.release()
     cv2.destroyAllWindows()
