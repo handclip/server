@@ -51,7 +51,7 @@ def get_marks(video_path: str) -> Set[int]:
         if frame is None:
             break
 
-        x, y, _ = frame.shape
+        frame_x, frame_y, _ = frame.shape
         frame = cv2.flip(frame, 1)
         framergb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
@@ -63,7 +63,7 @@ def get_marks(video_path: str) -> Set[int]:
         landmarks = []
         for hand_landmarks in result.multi_hand_landmarks:
             for landmark in hand_landmarks.landmark:
-                landmarks.append([landmark.x * x, landmark.y * y])
+                landmarks.append([landmark.x * frame_x, landmark.y * frame_y])
 
             prediction = model.predict([landmarks])
             gesture = hand_gestures[np.argmax(prediction)]
