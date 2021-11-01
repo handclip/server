@@ -2,7 +2,7 @@ import logging
 import uuid
 from os import path
 
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, HTTPException, UploadFile
 
 import video
 
@@ -28,7 +28,8 @@ async def save_video(file: UploadFile) -> str:
 @app.post('/upload/')
 async def upload_video(file: UploadFile = File(...)):
     video_path = await save_video(file)
-    if marks := video.get_marks(video_path):
-        return {'marks': marks}
-    else:
-        return {'error': 'Could not find any marks.'}
+
+    try:
+        return {'marks': video.get_marks(video_path)}
+    except video.InvalidVideoFile:
+        raise HTTPException(status_code=400, detail='Invalid video file.')

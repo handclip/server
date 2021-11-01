@@ -18,6 +18,10 @@ hands = mp.solutions.hands.Hands(max_num_hands=1, min_detection_confidence=0.65)
 model = load_model('mp_hand_gesture')
 
 
+class InvalidVideoFile(Exception):
+    pass
+
+
 class HandGesture(Enum):
     OKAY = 0
     PEACE = 1
@@ -42,6 +46,10 @@ class RecordedGesture:
 
 def get_marks(video_path: str) -> Set[int]:
     cap = cv2.VideoCapture(video_path)
+
+    if not cap.isOpened():
+        raise InvalidVideoFile
+
     last_gesture = None
     marks = set()
 
