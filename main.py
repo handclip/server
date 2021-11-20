@@ -6,7 +6,8 @@ from fastapi import FastAPI, File, HTTPException, UploadFile
 
 import video
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
+logging.basicConfig(level=logging.INFO,
+                    format="%(asctime)s %(levelname)s %(name)s %(message)s")
 logger = logging.getLogger(__name__)
 
 VIDEOS_DIR = 'videos'
@@ -21,7 +22,7 @@ async def save_video(file: UploadFile) -> str:
         while content := await file.read(4096):
             out_file.write(content)
 
-    logger.info(f'Saved video to {video_path}')
+    logger.info('Saved video to %s', video_path)
     return video_path
 
 
@@ -31,5 +32,5 @@ async def upload_video(file: UploadFile = File(...)):
 
     try:
         return {'marks': video.get_marks(video_path)}
-    except video.InvalidVideoFile:
-        raise HTTPException(status_code=400, detail='Invalid video file.')
+    except video.InvalidVideoFile as ex:
+        raise HTTPException(status_code=400, detail='Invalid video.') from ex
