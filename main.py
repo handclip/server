@@ -26,7 +26,7 @@ async def save_video(file: UploadFile) -> str:
     return video_path
 
 
-@app.post('/upload/')
+@app.post('/')
 async def upload_video(file: UploadFile = File(...)):
     video_path = await save_video(file)
 
